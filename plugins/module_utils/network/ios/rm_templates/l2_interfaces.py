@@ -374,10 +374,10 @@ class L2_interfacesTemplate(NetworkTemplate):
             "name": "spanning_tree.rootguard",
             "getval": re.compile(
                 r"""
-                \s+spanning-tree\sbpduguard\srootguard
+                \s+spanning-tree\sguard\sroot
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree bpduguard rootguard",
+            "setval": "spanning-tree guard root",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
