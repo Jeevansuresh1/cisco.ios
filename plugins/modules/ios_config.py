@@ -76,10 +76,21 @@ options:
       - Specifies the source path to the file that contains the configuration or configuration
         template to load.  The path to the source file can either be the full path on
         the Ansible control host or a relative path from the playbook or role root directory. This
-        argument is mutually exclusive with I(lines), I(parents). The configuration lines in the
+        argument is mutually exclusive with I(lines), I(parents), I(content). The configuration lines in the
         source file should be similar to how it will appear if present in the running-configuration
         of the device including the indentation to ensure idempotency and correct diff.
     type: str
+  content:
+    description:
+      - Specifies a pre-rendered configuration string to load onto the device. This allows
+        users to pass configuration content that has already been templated or generated
+        externally (e.g., via Jinja2 or an external tool) without needing to write it
+        to a file first. This argument is mutually exclusive with I(lines), I(parents),
+        and I(src). The configuration lines should be similar to how they will appear if
+        present in the running-configuration of the device including the indentation to
+        ensure idempotency and correct diff.
+    type: str
+    version_added: "11.1.0"
   before:
     description:
       - The ordered set of commands to push on to the command stack if a change needs
@@ -458,6 +469,8 @@ def get_candidate_config(module):
     candidate = ""
     if module.params["src"]:
         candidate = module.params["src"]
+    elif module.params["content"]:
+        candidate = module.params["content"]
     elif module.params["lines"]:
         lines = []
         for item in module.params["lines"]:
@@ -503,6 +516,7 @@ def main():
     )
     argument_spec = dict(
         src=dict(type="str"),
+        content=dict(type="str"),
         lines=dict(aliases=["commands"], type="list", elements="raw", options=line_spec),
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
@@ -519,7 +533,7 @@ def main():
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
-    mutually_exclusive = [("lines", "src"), ("parents", "src")]
+    mutually_exclusive = [("lines", "src", "content"), ("parents", "src"), ("parents", "content")]
     required_if = [
         ("match", "strict", ["lines", "src"], True),
         ("match", "exact", ["lines", "src"], True),
@@ -546,7 +560,7 @@ def main():
         config = NetworkConfig(indent=1, contents=contents)
         if module.params["backup"]:
             result["__backup__"] = contents
-    if any((module.params["lines"], module.params["src"])):
+    if any((module.params["lines"], module.params["src"], module.params["content"])):
         match = module.params["match"]
         replace = module.params["replace"]
         path = module.params["parents"]
