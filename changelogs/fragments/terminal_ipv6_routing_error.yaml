@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - terminal - Add detection for '% IPv6 routing not enabled' and '% Incomplete command' device errors so modules fail instead of silently reporting success.
