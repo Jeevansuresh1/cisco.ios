@@ -150,6 +150,13 @@ class Ospfv2(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in haved.items():
                 if k not in wantd:
+                    if have.get("passive_interfaces", {}).get("default"):
+                        self.addcmd(have, "pid", False)
+                        self.compare(
+                            parsers=["passive_interfaces.default"],
+                            want=dict(),
+                            have={"passive_interfaces": {"default": True}},
+                        )
                     self.addcmd(have, "pid", True)
 
         for k, want in wantd.items():
