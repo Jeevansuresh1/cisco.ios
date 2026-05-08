@@ -464,12 +464,13 @@ class Ntp_globalTemplate(NetworkTemplate):
             "name": "source",
             "getval": re.compile(
                 r"""
-                ^ntp\ssource\s(?P<source>\S+)
+                ^ntp\ssource
+                (\s(?P<source>\S+))?
                 $""", re.VERBOSE,
             ),
             "setval": "ntp source {{ source }}",
             "result": {
-                "source": "{{ source }}",
+                "source": "{{ source if source is defined else '' }}",
             },
         },
         {
