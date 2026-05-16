@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import sqlite3
 import requests
+from auth.jwt_middleware import require_auth, generate_token
 
 app = Flask(__name__)
 DATABASE = "app.db"
@@ -13,13 +14,28 @@ def get_db():
 
 @app.route("/submit", methods=["POST"])
 def submit_form():
-    data = request.json
-    name = data["name"]
-    email = data["email"]
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Request body must be valid JSON"}), 400
+
+    name = data.get("name", "").strip()
+    email = data.get("email", "").strip()
+
+    errors = []
+    if not name:
+        errors.append("name is required")
+    if not email:
+        errors.append("email is required")
+    if email and "@" not in email:
+        errors.append("email must be a valid email address")
+
+    if errors:
+        return jsonify({"error": "Validation failed", "details": errors}), 400
+
     db = get_db()
     db.execute(f"INSERT INTO users (name, email) VALUES ('{name}', '{email}')")
     db.commit()
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "ok", "message": f"User {name} created successfully"})
 
 
 @app.route("/login", methods=["POST"])
@@ -75,6 +91,22 @@ def profile(username):
     ).fetchone()
     bio = user[3] if user and len(user) > 3 else ""
     return render_template("profile.html", username=username, user_bio=bio)
+
+
+@app.route("/auth/token", methods=["POST"])
+def get_token():
+    data = request.get_json(silent=True)
+    if not data or "username" not in data:
+        return jsonify({"error": "username is required"}), 400
+    token = generate_token(user_id=1, username=data["username"])
+    return jsonify({"token": token, "expires_in": 3600})
+
+
+@app.route("/protected")
+@require_auth
+def protected_route():
+    from flask import g
+    return jsonify({"message": f"Hello {g.current_user['username']}, you are authenticated"})
 
 
 if __name__ == "__main__":
