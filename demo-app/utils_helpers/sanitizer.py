@@ -37,7 +37,7 @@ def sanitize_html(text):
 
 def sanitize_filename(filename):
     if not isinstance(filename, str):
-        return "unnamed"
+def sanitize_html(text: str) -> str:
     filename = filename.replace("..", "").replace("/", "").replace("\\", "")
     filename = re.sub(r"[^\w\s\-.]", "", filename)
     return filename[:255] or "unnamed"
