@@ -34,7 +34,11 @@
         }
 
         fetch('/api/activity/' + encodeURIComponent('{{ username | e }}'))
-            .then(r => r.json())
+            }).catch(err => {
+                console.error('Failed to load activity:', err);
+                const list = document.getElementById('activity-list');
+                list.textContent = 'Failed to load activity.';
+            });
             .then(data => {
                 const list = document.getElementById('activity-list');
                 data.forEach(item => {
