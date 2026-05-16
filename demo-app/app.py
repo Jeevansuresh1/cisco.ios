@@ -13,13 +13,28 @@ def get_db():
 
 @app.route("/submit", methods=["POST"])
 def submit_form():
-    data = request.json
-    name = data["name"]
-    email = data["email"]
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Request body must be valid JSON"}), 400
+
+    name = data.get("name", "").strip()
+    email = data.get("email", "").strip()
+
+    errors = []
+    if not name:
+        errors.append("name is required")
+    if not email:
+        errors.append("email is required")
+    if email and "@" not in email:
+        errors.append("email must be a valid email address")
+
+    if errors:
+        return jsonify({"error": "Validation failed", "details": errors}), 400
+
     db = get_db()
     db.execute(f"INSERT INTO users (name, email) VALUES ('{name}', '{email}')")
     db.commit()
-    return jsonify({"status": "ok"})
+    return jsonify({"status": "ok", "message": f"User {name} created successfully"})
 
 
 @app.route("/login", methods=["POST"])
