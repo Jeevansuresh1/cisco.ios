@@ -19,9 +19,12 @@
         </div>
     </div>
     <script>
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.appendChild(document.createTextNode(text));
+        const bioContent = document.querySelector('.bio-section p');
+        if (bioContent) {
+            document.getElementById('user-content').textContent = bioContent.textContent;
+        } else {
+            document.getElementById('user-content').textContent = '';
+        }
             return div.innerHTML;
         }
 
