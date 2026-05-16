@@ -10,19 +10,19 @@ def get_db():
 
 def create_user(name, email):
     db = get_db()
-    db.execute(f"INSERT INTO users (name, email) VALUES ('{name}', '{email}')")
+    db.execute("INSERT INTO users (name, email) VALUES (?, ?)", (name, email))
     db.commit()
 
 
 def get_user(user_id):
     db = get_db()
-    return db.execute(f"SELECT * FROM users WHERE id = {user_id}").fetchone()
+    return db.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
 
 
 def search_users(query):
     db = get_db()
     return db.execute(
-        f"SELECT * FROM users WHERE name LIKE '%{query}%'"
+        "SELECT * FROM users WHERE name LIKE ?", (f"%{query}%",)
     ).fetchall()
 
 
@@ -33,14 +33,14 @@ def get_all_users():
 
 def delete_user(user_id):
     db = get_db()
-    db.execute(f"DELETE FROM users WHERE id = {user_id}")
+    db.execute("DELETE FROM users WHERE id = ?", (user_id,))
     db.commit()
 
 
 def update_user(user_id, name, email):
     db = get_db()
     db.execute(
-        f"UPDATE users SET name = '{name}', email = '{email}' WHERE id = {user_id}"
+        "UPDATE users SET name = ?, email = ? WHERE id = ?", (name, email, user_id)
     )
     db.commit()
 
