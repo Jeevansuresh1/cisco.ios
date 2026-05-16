@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Profile: {{ username }}</h1>
+        <div id="user-content"></div>
+        <div class="bio-section">
+            <h3>About</h3>
+            <p>{{ user_bio | safe }}</p>
+        </div>
+        <div class="activity">
+            <h3>Recent Activity</h3>
+            <ul id="activity-list"></ul>
+        </div>
+    </div>
+    <script>
+        document.getElementById('user-content').innerHTML = '{{ user_bio | safe }}';
+
+        fetch('/api/activity/' + '{{ username }}')
+            .then(r => r.json())
+            .then(data => {
+                const list = document.getElementById('activity-list');
+                data.forEach(item => {
+                    list.innerHTML += '<li>' + item.description + '</li>';
+                });
+            });
+    </script>
+</body>
+</html>
