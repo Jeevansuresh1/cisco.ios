@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import sqlite3
 import requests
+from api.profiles import profiles_bp
 
 app = Flask(__name__)
 DATABASE = "app.db"
@@ -75,6 +76,9 @@ def profile(username):
     ).fetchone()
     bio = user[3] if user and len(user) > 3 else ""
     return render_template("profile.html", username=username, user_bio=bio)
+
+
+app.register_blueprint(profiles_bp)
 
 
 if __name__ == "__main__":
