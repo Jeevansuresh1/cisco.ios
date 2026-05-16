@@ -30,9 +30,9 @@
 
         const bioContent = document.querySelector('.bio-section p');
         if (bioContent) {
-            document.getElementById('user-content').textContent = bioContent.textContent;
-        }
-
+                    const li = document.createElement('li');
+                    li.textContent = item.description || '';
+                    list.appendChild(li);
         fetch('/api/activity/' + encodeURIComponent('{{ username | e }}'))
             }).catch(err => {
                 console.error('Failed to load activity:', err);
