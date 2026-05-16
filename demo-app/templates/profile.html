@@ -3,14 +3,15 @@
 <head>
     <title>User Profile</title>
     <link rel="stylesheet" href="/static/style.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';">
 </head>
 <body>
     <div class="container">
-        <h1>Profile: {{ username }}</h1>
+        <h1>Profile: {{ username | e }}</h1>
         <div id="user-content"></div>
         <div class="bio-section">
             <h3>About</h3>
-            <p>{{ user_bio | safe }}</p>
+            <p>{{ user_bio | e }}</p>
         </div>
         <div class="activity">
             <h3>Recent Activity</h3>
@@ -18,16 +19,28 @@
         </div>
     </div>
     <script>
-        document.getElementById('user-content').innerHTML = '{{ user_bio | safe }}';
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(text));
+            return div.innerHTML;
+        }
 
-        fetch('/api/activity/' + '{{ username }}')
+        const bioContent = document.querySelector('.bio-section p');
+        if (bioContent) {
+            document.getElementById('user-content').textContent = bioContent.textContent;
+        }
+
+        fetch('/api/activity/' + encodeURIComponent('{{ username | e }}'))
             .then(r => r.json())
             .then(data => {
                 const list = document.getElementById('activity-list');
                 data.forEach(item => {
-                    list.innerHTML += '<li>' + item.description + '</li>';
+                    const li = document.createElement('li');
+                    li.textContent = item.description;
+                    list.appendChild(li);
                 });
-            });
+            })
+            .catch(err => console.error('Failed to load activity:', err));
     </script>
 </body>
 </html>

@@ -69,12 +69,15 @@ def upload_file():
 
 @app.route("/profile/<username>")
 def profile(username):
+    from utils_helpers.sanitizer import escape_html, sanitize_html
+
     db = get_db()
     user = db.execute(
         f"SELECT * FROM users WHERE name = '{username}'"
     ).fetchone()
     bio = user[3] if user and len(user) > 3 else ""
-    return render_template("profile.html", username=username, user_bio=bio)
+    safe_bio = sanitize_html(bio)
+    return render_template("profile.html", username=escape_html(username), user_bio=safe_bio)
 
 
 if __name__ == "__main__":
