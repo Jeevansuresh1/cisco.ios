@@ -73,8 +73,16 @@ def list_users():
 
 @app.route("/api/external-data")
 def get_external_data():
-    resp = requests.get("https://api.example.com/data")
-    return jsonify(resp.json())
+    from utils import fetch_external_api
+    try:
+        data = fetch_external_api("https://api.example.com/data")
+        return jsonify(data)
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "External API timed out. Please try again later."}), 504
+    except requests.exceptions.ConnectionError:
+        return jsonify({"error": "Unable to reach external API."}), 502
+    except requests.exceptions.HTTPError as e:
+        return jsonify({"error": f"External API error: {str(e)}"}), 502
 
 
 @app.route("/upload", methods=["POST"])
