@@ -69,7 +69,7 @@ def upload_file():
 
 @app.route("/profile/<username>")
 def profile(username):
-    from utils_helpers.sanitizer import escape_html, sanitize_html
+    user = db.execute("SELECT * FROM users WHERE name = ?", (username,)).fetchone()
 
     db = get_db()
     user = db.execute(
