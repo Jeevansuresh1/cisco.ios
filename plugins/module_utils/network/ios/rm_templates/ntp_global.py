@@ -468,7 +468,7 @@ class Ntp_globalTemplate(NetworkTemplate):
                 (\s(?P<source>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "ntp source {{ source }}",
+                "source": "{{ source if source is defined else None }}",
             "result": {
                 "source": "{{ source if source is defined else '' }}",
             },
