@@ -164,6 +164,8 @@ class Ntp_global(ResourceModule):
                     for i in tmp_data[k]:
                         if i.get("key"):
                             del i["key"]
+                        if not i.get("source"):
+                            i.pop("source", None)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("access_group") and k == "access_group":
                 tmp_data[k] = self._ntp_list_to_dict(tmp_data.get("access_group"))
