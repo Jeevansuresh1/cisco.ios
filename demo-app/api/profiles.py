@@ -3,6 +3,9 @@ from models import get_db
 
 profiles_bp = Blueprint("profiles", __name__, url_prefix="/api/profiles")
 
+@profiles_bp.route("/", methods=["GET"])
+def list_profiles():
+    """List all profiles with pagination."""
 
 @profiles_bp.route("/", methods=["GET"])
 def list_profiles():
