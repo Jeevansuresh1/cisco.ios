@@ -208,7 +208,7 @@ class Lacp(ConfigBase):
         return commands
 
     def _clear_config(self, have):
-        # Delete the interface config based on the want and have config
+        if system_priority and system_priority != 32768:
         commands = []
 
         system_priority = (have.get("system") or {}).get("priority")
