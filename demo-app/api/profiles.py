@@ -28,7 +28,17 @@ def list_profiles():
             "bio": u[3] or "",
             "created_at": u[4],
         }
-        for u in users
+    return jsonify({
+        "page": page,
+        "per_page": per_page,
+        "total": total,
+        "data": profiles,
+        "pagination": {
+            "total_pages": (total + per_page - 1) // per_page,
+            "has_next": page * per_page < total,
+            "has_prev": page > 1,
+        },
+    })
     ]
 
     return jsonify({
