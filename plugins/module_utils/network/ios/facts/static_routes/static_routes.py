@@ -57,11 +57,14 @@ class Static_routesFacts(object):
                 _dest = routes.pop("_dest")
                 _topology = routes.pop("_topology", None)
                 _netmask = routes.pop("_netmask", None)
+                _track = routes.get("track")
                 _routes["dest"] = (
                     update_netmask_to_cidr(_dest, _netmask) if _afi == "ipv4" else _dest
                 )
                 if _topology:
                     _routes["topology"] = _topology
+                if _track:
+                    routes["track"] = int(_track)
                 _nx_hop.append(routes)
 
             _routes["next_hops"].extend(_nx_hop)
