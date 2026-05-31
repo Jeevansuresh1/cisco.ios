@@ -21,6 +21,7 @@ def submit_form():
 
     name = data.get("name", "").strip()
     email = data.get("email", "").strip()
+    email = data.get("email", "").strip()
 
     errors = []
     if not name:
