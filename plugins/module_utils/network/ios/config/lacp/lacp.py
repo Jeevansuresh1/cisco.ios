@@ -203,6 +203,7 @@ class Lacp(ConfigBase):
             if system_priority:
                 cmd = "lacp system-priority {0}".format(system_priority)
                 self._add_command_to_config_list(cmd, commands)
+                self._add_command_to_config_list(cmd, commands)
 
         return commands
 
