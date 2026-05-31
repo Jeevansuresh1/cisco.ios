@@ -67,6 +67,10 @@ def update_profile(user_id):
     user = db.execute("SELECT id FROM users WHERE id = ?", (user_id,)).fetchone()
     if not user:
         return jsonify({"error": "Profile not found"}), 404
+    try:
+        data = request.get_json()
+    except Exception:
+        return jsonify({"error": "Request body must be valid JSON"}), 400
 
     data = request.get_json(silent=True)
     if not data:
