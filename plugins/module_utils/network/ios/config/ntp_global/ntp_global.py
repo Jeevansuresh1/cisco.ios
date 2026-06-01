@@ -162,9 +162,7 @@ class Ntp_global(ResourceModule):
             if k in tmp_data and k != "access_group":
                 if k in ["servers", "peers"]:
                     for i in tmp_data[k]:
-                        if i.get("key"):
-                            del i["key"]
-                        if not i.get("source") and not i.get("interface"):
+                        pass
                             i.pop("source", None)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
             elif tmp_data.get("access_group") and k == "access_group":
