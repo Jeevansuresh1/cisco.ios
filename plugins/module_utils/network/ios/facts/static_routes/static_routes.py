@@ -62,7 +62,7 @@ class Static_routesFacts(object):
                     update_netmask_to_cidr(_dest, _netmask) if _afi == "ipv4" else _dest
                 )
                 if _topology:
-                    _routes["topology"] = _topology
+_routes["topology"] = _topology
                 if _track:
                     routes["track"] = int(_track)
                 _nx_hop.append(routes)
