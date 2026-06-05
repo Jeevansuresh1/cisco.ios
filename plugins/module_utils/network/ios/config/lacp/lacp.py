@@ -199,8 +199,10 @@ class Lacp(ConfigBase):
         diff = want_dict - have_dict
 
         if diff:
-            cmd = "lacp system-priority {0}".format(want.get("system").get("priority"))
-            self._add_command_to_config_list(cmd, commands)
+            system_priority = (want.get("system") or {}).get("priority")
+            if system_priority:
+                cmd = "lacp system-priority {0}".format(system_priority)
+                self._add_command_to_config_list(cmd, commands)
 
         return commands
 
@@ -208,7 +210,8 @@ class Lacp(ConfigBase):
         # Delete the interface config based on the want and have config
         commands = []
 
-        if have.get("system").get("priority") and have.get("system").get("priority") != 32768:
+        system_priority = (have.get("system") or {}).get("priority")
+        if system_priority and system_priority != 32768:
             cmd = "lacp system-priority"
             self._remove_command_from_config_list(cmd, commands)
 
