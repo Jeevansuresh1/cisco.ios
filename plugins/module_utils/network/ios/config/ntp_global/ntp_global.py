@@ -161,7 +161,7 @@ class Ntp_global(ResourceModule):
         for k, _v in p_key.items():
             if k in tmp_data and k != "access_group":
                 if k in ["servers", "peers"]:
-for i in tmp_data.get
+for i in tmp_data.get(k, [])
 pass
                             i.pop("source", None)
                 tmp_data[k] = {str(i[p_key[k]]): i for i in tmp_data[k]}
