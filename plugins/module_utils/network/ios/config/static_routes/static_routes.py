@@ -180,7 +180,7 @@ _key = _sdest + "_" + _topo + _forw_rtr_add + _intf + _track
                                 dummy_sr["interface"] = _intf
                             if _forw_rtr_add:
                                 dummy_sr["forward_router_address"] = _forw_rtr_add
-                            if _track:
+if _track is not None:
                                 dummy_sr["track"] = _track
                             dummy_sr.update(nxh)
 
