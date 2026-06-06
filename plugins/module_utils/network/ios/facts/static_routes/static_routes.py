@@ -63,7 +63,7 @@ class Static_routesFacts(object):
                 )
                 if _topology:
 _routes["topology"] = _topology
-                if _track:
+if _track is not None:
                     routes["track"] = int(_track)
                 _nx_hop.append(routes)
 
