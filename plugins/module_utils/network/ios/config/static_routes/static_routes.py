@@ -162,7 +162,8 @@ class Static_routes(ResourceModule):
                         for nxh in rts.get("next_hops", []):
                             _forw_rtr_add = nxh.get("forward_router_address", "").upper()
                             _intf = nxh.get("interface", "")
-                            _key = _sdest + "_" + _topo + _forw_rtr_add + _intf
+                            _track = nxh.get("track")
+_key = _sdest + "_" + _topo + _forw_rtr_add + _intf + _track
 
                             if _afi == "ipv4":
                                 _dest = validate_n_expand_ipv4(self._module, {"address": _dest})
@@ -179,6 +180,8 @@ class Static_routes(ResourceModule):
                                 dummy_sr["interface"] = _intf
                             if _forw_rtr_add:
                                 dummy_sr["forward_router_address"] = _forw_rtr_add
+if _track is not None:
+                                dummy_sr["track"] = _track
                             dummy_sr.update(nxh)
 
                             _routes[_key] = dummy_sr
